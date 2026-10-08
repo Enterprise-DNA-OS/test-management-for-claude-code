@@ -1,5 +1,37 @@
-# Slash commands
+# Recurring jobs
 
-One file per recurring job. Each command tells Claude Code exactly which CLI command to run and how to present the result, so the operator never re-explains the job.
-
-Add a command every time the same ask comes twice. Frontmatter needs a `description:` line. The body is the brief.
+- /projects: List project owners and test-data review dates.
+- /cases: Review the case library and approvals.
+- /runs: List test runs and their readiness.
+- /results: Read every recorded result, including earlier failures.
+- /defects: Review defect owners and resolutions.
+- /release-readiness: Find releases held by unfinished tests or defects.
+- /retest-queue: Find failed, blocked and retest checks.
+- /stale-cases: Review cases older than the internal 90-day review interval.
+- /coverage: Trace case references, approvals and execution history.
+- /failures: Find cases with repeated recorded failures.
+- /workload: See unfinished checks by assignee.
+- /attention: Find overdue runs, stale cases and missing reviews.
+- /compliance: Check retention review records and internal testing controls.
+- /activity: Read the append-only change history.
+- /case: Read a case with its history and run snapshots.
+- /run: Read a run and every included check.
+- /weekly-review: Prepare the weekly release, attention and workload review.
+- /add-project: Register a project with a data-retention review.
+- /add-case: Write a draft test case.
+- /revise-case: Revise a case and clear its approval.
+- /approve-case: Approve the current case version after reviewing its steps.
+- /create-run: Snapshot the approved case library into a new run.
+- /assign: Assign an included check.
+- /record-result: Record a result with evidence.
+- /add-defect: Track a defect against an included check.
+- /close-defect: Close a defect after a passing retest.
+- /close-run: Close a completed run after all checks pass and defects close.
+- /review-data: Record a test-data purpose and retention review.
+- /log: Log a project decision.
+- /draft-release: Draft release evidence for human review.
+- /draft-defect: Draft a defect follow-up for human review.
+- /import: Import a TestRail case-library CSV with a test run first.
+- /export: Export every record and snapshot to private JSON.
+- /customise: add fields and rules through a migration.
+- /new-view: add a read-only report.

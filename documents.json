@@ -1,11 +1,5 @@
 [
-  {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
-    "file": "name",
-    "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
-    ]
-  }
+ {"name":"release-evidence","title":"Release evidence pack","for_each":"select id,name from runs order by name","file":"name","sections":[{"title":"Run decision","sql":"select name,build,environment,total,passed,remaining,open_defects,decision,state from release_readiness where id=$1","note":"A test report for human review. This does not approve or deploy a release."},{"title":"Checks","sql":"select title,version,priority,status,evidence,actor,open_defects from execution_status where run_id=$1 order by title"},{"title":"Full result history","sql":"select e.title,x.status,x.evidence,x.note,x.actor,x.created_at from results x join execution_status e on e.id=x.run_case_id where e.run_id=$1 order by x.seq"}]},
+ {"name":"defect-follow-up","title":"Defect follow-up","for_each":"select id,title as name from defects order by title","file":"name","sections":[{"title":"Owner and resolution","sql":"select title,external_ref,owner,severity,state,resolution from defects where id=$1"},{"title":"Related execution","sql":"select e.run,e.build,e.environment,e.title,e.status,e.evidence from execution_status e join defects d on d.run_case_id=e.id where d.id=$1"}]},
+ {"name":"test-data-review","title":"Test-data review record","for_each":"select id,name from projects order by name","file":"name","sections":[{"title":"Purpose and retention","sql":"select name,owner,data_review_due,retention_note from projects where id=$1","note":"Keep synthetic test records. Review linked evidence for personal information before sharing."},{"title":"Recorded decisions","sql":"select actor,action,detail,created_at from activity where record_id=$1 order by created_at"}]}
 ]

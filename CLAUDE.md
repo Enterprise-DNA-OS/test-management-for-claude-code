@@ -1,43 +1,53 @@
-# Test Management for Claude Code: operating instructions
+# Test Management for Claude Code
 
-This file is the brain. Claude Code reads it at the start of every session. It says who this is for, how work gets done, and the one right way to do each recurring job.
+A software testing record system for one business. The fictional demo is Harbour Portal. The operator owns the release decision. Test results describe evidence; they never authorise deployment.
 
-## Who this is for
+Read the CLI before answering. Read the case or run history before changing it. Never invent test results, source references, people or evidence. Ambiguous matches list candidates and exit 1.
 
-- **Business:** [YOUR BUSINESS]
-- **Operator:** [YOUR NAME], [your role]
-- **What matters most:** [the one or two outcomes you care about]
+Results and activity are append-only. New runs snapshot approved cases. Revising or changing an imported case clears approval and increases its version; old run snapshots do not change. New runs include all approved cases in that project, so review the selection before testing. A closed run accepts no new results.
 
-Fill this in once. A worker with context knows. A worker without it guesses.
+Use synthetic test records. Review docs/compliance.md before discussing record checks and docs/replace-testrail.md before importing. Every actor string is attribution, not an authenticated identity. Local mode is single-process. Shared Postgres needs restricted roles, authentication and backups before team use. Never expose an owner connection to a browser.
 
-## How to work
+## Recurring jobs
 
-1. **Take a brief, not a script.** The operator describes the outcome. You run the right command and present the answer.
-2. **Read before you write.** Before drafting anything about a record, read its full history first.
-3. **Plain language.** Short sentences. No filler. Numbers in tables.
-4. **Silent success, loud problems.** No play-by-play. Say what broke and what you did about it.
-5. **Stop at the line.** Anything that sends, deletes, or faces a customer waits for a yes in this session.
-
-## Routing table: one right way for each recurring job
-
-| When the operator asks for... | Use this |
+| Job | Recipe |
 |---|---|
-| <!-- TODO(author): one row per slash command --> | `/...` |
+| List project owners and test-data review dates | /projects |
+| Review the case library and approvals | /cases |
+| List test runs and their readiness | /runs |
+| Read every recorded result, including earlier failures | /results |
+| Review defect owners and resolutions | /defects |
+| Find releases held by unfinished tests or defects | /release-readiness |
+| Find failed, blocked and retest checks | /retest-queue |
+| Review cases older than the internal 90-day review interval | /stale-cases |
+| Trace case references, approvals and execution history | /coverage |
+| Find cases with repeated recorded failures | /failures |
+| See unfinished checks by assignee | /workload |
+| Find overdue runs, stale cases and missing reviews | /attention |
+| Check retention review records and internal testing controls | /compliance |
+| Read the append-only change history | /activity |
+| Read a case with its history and run snapshots | /case |
+| Read a run and every included check | /run |
+| Prepare the weekly release, attention and workload review | /weekly-review |
+| Register a project with a data-retention review | /add-project |
+| Write a draft test case | /add-case |
+| Revise a case and clear its approval | /revise-case |
+| Approve the current case version after reviewing its steps | /approve-case |
+| Snapshot the approved case library into a new run | /create-run |
+| Assign an included check | /assign |
+| Record a result with evidence | /record-result |
+| Track a defect against an included check | /add-defect |
+| Close a defect after a passing retest | /close-defect |
+| Close a completed run after all checks pass and defects close | /close-run |
+| Record a test-data purpose and retention review | /review-data |
+| Log a project decision | /log |
+| Draft release evidence for human review | /draft-release |
+| Draft a defect follow-up for human review | /draft-defect |
+| Import a TestRail case-library CSV with a test run first | /import |
+| Export every record and snapshot to private JSON | /export |
+| Change fields and policies | /customise |
+| Add a read-only report | /new-view |
 
-If an ask fits nothing here, run the CLI directly (`npm run <cli> -- --help`) and then propose a new command for it.
+The one CLI is scripts/testing.mjs. Every command accepts --json. Read docs/cli.md for arguments. All runtimes use .claude/commands/. Never send, delete, deploy or call external vendor systems. Drafts stay in drafts/.
 
-## Hard rules
-
-- Never send email or messages from here. Draft to `drafts/`, a person sends.
-- Never delete records without an explicit yes in this session. Prefer marking closed or archived.
-- Never invent a record. If a name is ambiguous, list the candidates and ask.
-- The database is the source of truth. If the answer is not in it, say so.
-
-## Where things live
-
-- `scripts/` the CLI. `scripts/lib/db.mjs` picks `DATABASE_URL` (Postgres, Supabase) or the embedded database in `.data/`.
-- `supabase/migrations/` the schema, plain SQL. `npm run migrate` applies it.
-- `.claude/commands/` the slash commands. Add one every time the same ask comes twice.
-- `docs/` the thesis and the guide for moving off TestRail.
-
-Built by Enterprise DNA. Installed and run for you as part of Omni: https://enterprisedna.co/omni/instead-of/testrail
+Omni by Enterprise DNA installs, customises and runs this system. https://enterprisedna.co/omni/book/?offer=replace-software&utm_campaign=testrail&utm_source=github&utm_medium=instructions

@@ -1,0 +1,3 @@
+ID,Title,Priority,References,Section,Type,Steps,Expected Result
+C101,"Member signs in, fictional account",High,AUTH-1,Authentication,Functional,Enter synthetic credentials,Account home appears
+C102,Expired invitation refused,Critical,AUTH-2,Authentication,Functional,Open expired demo link,Access refused

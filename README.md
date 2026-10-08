@@ -1,115 +1,78 @@
-<h1 align="center">Test Management for Claude Code</h1>
+# Test Management for Claude Code
 
-<p align="center">
-  <strong>The open-source test management system that is just a database and Claude Code.</strong>
-</p>
+Know which release is held, which checks need retesting and where the evidence lives. An MIT-licensed database and command set for software testing teams. Works with Claude Code, Codex, OpenCode or Cursor.
 
-<p align="center">
-  Created by <a href="https://www.enterprisedna.co"><strong>Enterprise DNA</strong></a>. Free and open source. Works with Claude Code, Codex, OpenCode or Cursor.
-</p>
+| Do it yourself | We customise it | We run it for you |
+|---|---|---|
+| Free. Try the demo and bring across a TestRail case CSV. | Your case fields, approval rules, reports, history and a web front end or different stack if needed. | Installed, connected and operated through Omni by Enterprise DNA. One setup fee, then a retainer. |
+| [Quick start](#quick-start) | [Get your version built](https://enterprisedna.co/omni/book/?offer=replace-software&utm_campaign=testrail&utm_source=github&utm_medium=customise) | [Book a call](https://enterprisedna.co/omni/book/?offer=replace-software&utm_campaign=testrail&utm_source=github&utm_medium=managed) |
 
-<!-- three-doors -->
-<table align="center">
-  <tr>
-    <td align="center"><strong>Do it yourself</strong><br/>Clone it, run it, own it. Free, MIT.<br/><a href="#quick-start">Quick start</a></td>
-    <td align="center"><strong>We customise it</strong><br/>Your fields, your rules, your TestRail data brought across.<br/><a href="https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=testrail">Book a call</a></td>
-    <td align="center"><strong>We run it for you</strong><br/>Installed, connected and operated inside Omni. Setup fee, then a retainer.<br/><a href="https://enterprisedna.co/omni/instead-of/testrail?utm_source=github&utm_medium=readme&utm_campaign=testrail">How it works</a></td>
-  </tr>
-</table>
+## The weekly release meeting
 
-<p align="center">
-  <a href="#what-is-this">What is this</a> &bull;
-  <a href="#why-no-front-end">Why no front end</a> &bull;
-  <a href="#quick-start">Quick start</a> &bull;
-  <a href="#the-commands">Commands</a> &bull;
-  <a href="#instead-of-testrail">Instead of TestRail</a> &bull;
-  <a href="#want-it-installed-and-run-for-you">Installed for you</a> &bull;
-  <a href="#license">License</a>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Node-20+-339933?style=flat-square" alt="Node 20+" />
-  <img src="https://img.shields.io/badge/PostgreSQL-any-336791?style=flat-square" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/PGlite-embedded-3ecf8e?style=flat-square" alt="PGlite" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License" />
-</p>
-
----
-
-## What is this
-
-Test Management for Claude Code does the job you pay TestRail for, as a Postgres database and a set of agent commands. There is no web front end. You open the folder in [Claude Code](https://claude.com/claude-code) (or Codex, OpenCode, Cursor: see `AGENTS.md`) and ask for what you want in plain language. It runs the right query, and it can answer questions the TestRail dashboard cannot.
-
-<!-- TODO(author): the annual bill. One sentence: what a 10 to 50 person business typically pays TestRail per year, all in, with a source. -->
-
-Want the same thing with a web front end, or built on a different stack? That is a customisation, and it is exactly what Enterprise DNA does: [book a call](https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=testrail).
-
-<!-- TODO(author): two or three sentences on what this specific product covers and who it is for. -->
-
-## Why no front end
-
-- The front end was only ever there because the database was hard to talk to. That is no longer true.
-- Your data sits in plain Postgres tables you own. Any tool can read them. No export, no lock-in.
-- No seats, no tiers, no add-ons. Read [docs/why-no-front-end.md](docs/why-no-front-end.md) for the honest trade-offs too.
+Five rituals: review cases, prepare a regression run, record results with evidence, triage defects and decide what is ready for release review. The fictional Harbour Portal demo contains an overdue run, an expired invitation defect, an untested export check and an unapproved accessibility case.
 
 ## Quick start
 
-Sixty seconds, no database install (an embedded Postgres runs inside Node):
+Node 20 or later. Windows and Linux commands:
 
 ```bash
 git clone https://github.com/Enterprise-DNA-OS/test-management-for-claude-code.git
 cd test-management-for-claude-code
 npm install
 npm run demo
+npm test
+npm run view
+npm run docs
 ```
 
-Then open the folder in Claude Code and type a slash command. <!-- TODO(author): name the first command to try. -->
+The embedded PGlite database is stored under .data/db. DATABASE_URL selects Postgres 15 or later with verified TLS. For real data, set a fresh DATA_DIR, migrate without seed, register your project and import your case CSV. Never mix demo and customer records. Local mode supports one process. A shared installation needs authenticated operators, restricted database roles and tested backups. Actor names are attribution, not authentication.
 
-### Use it with your own Postgres or Supabase
+There are 34 CLI commands including help, and 35 recurring slash recipes including /customise and /new-view. [Arguments and calculations](docs/cli.md). All reads and writes support --json. Ambiguous matches list candidates and exit 1.
 
-Copy `.env.example` to `.env`, set `DATABASE_URL`, then `npm run migrate`. Same commands, shared data, no per-seat fee.
+## What the release decision means
 
-## The commands
+A run snapshots approved cases. Results are append-only and the latest result controls each check's status. Every result needs evidence and an actor. An incomplete run or any open defect holds the run. Closing a defect needs a passing retest and a resolution. Closing a run never deploys or authorises a production release. Revising a case clears its approval without changing earlier run snapshots.
 
-<!-- TODO(author): a table of the slash commands in .claude/commands and what each one does. -->
+## Ten questions beyond a fixed report
 
-| Command | What it does |
-|---|---|
-| `/...` | ... |
+TestRail already has reporting and an agent connection. These questions demonstrate the shipped queries, not an unverified claim that its product cannot answer them.
 
-## Instead of testrail
+1. Which release has passing checks but unresolved defects? release-readiness
+2. Which failed checks need a named owner today? retest-queue
+3. Which cases have not been reviewed for ninety days? stale-cases
+4. Which case has no recorded requirement or risk reference? compliance
+5. Who has the most unfinished checks? workload
+6. Which cases failed repeatedly across recorded attempts? failures
+7. What evidence changed a failed check into a pass? results
+8. Which exact case version was included in this release? run
+9. Which projects need a test-data retention review? compliance
+10. Who changed a case, and what did the previous version contain? case
 
-<!-- TODO(author): how to bring data across from TestRail; link docs/replace-testrail.md -->
+## Your first hour: ten things to ask for
 
-## Architecture
+1. Put our name, logo and colours on the release report.
+2. Show what holds the current release.
+3. Assign the unfinished checks to their real owners.
+4. Draft a defect follow-up with the failed evidence.
+5. Check our case export without saving it.
+6. Import the approved mapping into a fresh project.
+7. Review the imported instructions before approving cases.
+8. Create a regression run for the next build.
+9. Add our risk category with /customise.
+10. Add a weekly owner report with /new-view.
 
-```
-test-management-for-claude-code/
-  CLAUDE.md                 how the operator wants this run (routing table + house rules)
-  AGENTS.md                 the same, for Codex / OpenCode / Cursor / Gemini CLI
-  .claude/commands/         the slash commands
-  scripts/                  the CLI the commands drive
-  scripts/lib/db.mjs        one adapter: DATABASE_URL (pg) or embedded PGlite
-  supabase/migrations/      plain SQL schema
-  supabase/seed.sql         demo data
-  docs/                     the thesis and the migration guide
-```
+## Paperwork and read-only views
 
-## Built for coding agents
+brand.json controls the business name, logo and colours. npm run docs creates release evidence packs, defect follow-ups and test-data review records. npm run view creates the release room and case library review. Drafts stay in drafts/. Protect reports and exports as private business data.
 
-The database, CLI and command recipes work with Claude Code, Codex, OpenCode or Cursor. Ask your coding agent for a new command and have it implement and test the change against the same records.
+[Record checks](docs/compliance.md) distinguish privacy review reminders from internal test policies. [Why no front end](docs/why-no-front-end.md) covers mobile, offline and interactive workflows. Nothing sends, deploys, signs a regulated approval or calls a vendor system.
 
-## Contributing
+## Move from TestRail
 
-Issues and pull requests are welcome. Keep the shape: plain SQL, a small CLI, a slash command per recurring job, no front end.
+[The replacement guide](docs/replace-testrail.md) explains the one-command case-library import, mapping, test run, repeat-import behaviour and reconciliation. Historical results and attachments need a separately agreed migration. It is not a whole-account clone.
 
-## Want it installed and run for you?
+## Verification
 
-Enterprise DNA installs Test Management for Claude Code for your business, migrates your TestRail data, connects it to the rest of your tools, and runs it for you as part of **Omni**, our managed Command Center. One setup fee, then a monthly retainer.
+npm test uses a temporary database and exercises all 34 commands, result history, run snapshots, release holds, retest requirements, repeat imports, rollback, ambiguous names, escaped HTML, documents, drafts and exports. CI defines Windows and Linux checks plus a Postgres run. TEST_DATABASE_URL is accepted only for an empty disposable database. TEST_VENDOR_CSV optionally validates the vendor's public reference export. [Research and selection](docs/research.md).
 
-- Book a call: [enterprisedna.co/omni/book](https://enterprisedna.co/omni/book/?offer=replace-software&utm_source=github&utm_medium=readme&utm_campaign=testrail)
-- Read more: [enterprisedna.co/omni/instead-of/testrail](https://enterprisedna.co/omni/instead-of/testrail?utm_source=github&utm_medium=readme&utm_campaign=testrail)
-
-## License
-
-MIT. Copyright (c) 2026 Enterprise DNA.
+MIT licence. Not affiliated with TestRail or Anthropic. Hosting and agent usage have separate costs. [Book 30 minutes with Sam](https://enterprisedna.co/omni/book/?offer=replace-software&utm_campaign=testrail&utm_source=github&utm_medium=readme).

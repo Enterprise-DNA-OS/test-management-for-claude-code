@@ -1,14 +1,4 @@
 [
-  {
-    "name": "week",
-    "title": "This week",
-    "subtitle": "Test Management for Claude Code: what needs attention, rendered by npm run view",
-    "sections": [
-      {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
-      }
-    ]
-  }
+ {"name":"release-room","title":"Release room","subtitle":"Test evidence for a human release decision","sections":[{"title":"Readiness","sql":"select name,build,environment,total,passed,remaining,open_defects,decision from release_readiness order by due_on"},{"title":"Attention","sql":"select * from attention order by due,item"},{"title":"Remaining work","sql":"select run,title,assignee,status from execution_status where state='open' and status<>'passed' order by due_on,title"}]},
+ {"name":"case-library","title":"Case library review","sections":[{"title":"Traceability","sql":"select project,title,refs,version,approved_by,reviewed_on,runs,last_result from case_coverage order by project,title"},{"title":"Record checks","sql":"select * from compliance_findings order by rule,item"}]}
 ]
